@@ -127,7 +127,7 @@
 
 // export default App;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -153,8 +153,41 @@ import DefectiveChallan from './components/defective-challan/DefectiveChallan';
 import WorkOrder from './components/work-order/WorkOrder';
 import OrderReceiving from './components/order/OrderReceiving';
 
+import LoginPage from './Login';
+
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+   const [isUserAuthenticated, setIsUserAuthenticated] = useState(null); // null = still checking
+
+  useEffect(() => {
+    const authenticateUser = async () => {
+      try {
+        const result = await window.catalyst.auth.isUserAuthenticated();
+        setIsUserAuthenticated(result); // result should be true/false
+
+      } catch (err) {
+        console.log("UNAUTHENTICATED");
+        setIsUserAuthenticated(false);
+      }
+    };
+    authenticateUser();
+  }, []);
+
+  if (isUserAuthenticated === null) {
+    return <div>Loading...</div>; // <-- prevent premature redirect
+  }
+
+  if (isUserAuthenticated === false) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="*" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </Router>
+    )
+  }
 
   return (
     <Router>
