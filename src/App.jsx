@@ -164,30 +164,39 @@ function App() {
     const authenticateUser = async () => {
       try {
         const result = await window.catalyst.auth.isUserAuthenticated();
-        setIsUserAuthenticated(result); // result should be true/false
+        setIsUserAuthenticated(true); // result should be true/false
 
       } catch (err) {
         console.log("UNAUTHENTICATED");
         setIsUserAuthenticated(false);
+        //window.location.href = window.origin + "/__catalyst/auth/login?redirect_url=/welcome";
       }
     };
     authenticateUser();
   }, []);
 
-  if (isUserAuthenticated === null) {
-    return <div>Loading...</div>; // <-- prevent premature redirect
-  }
-
+  useEffect(() => {
   if (isUserAuthenticated === false) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="*" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </Router>
-    )
+    window.location.replace(
+      window.origin + "/__catalyst/auth/login?redirect_url=/"
+    );
   }
+}, [isUserAuthenticated]);
+
+  // if (isUserAuthenticated === null) {
+  //   return <div>Loading...</div>; // <-- prevent premature redirect
+  // }
+
+  // if (isUserAuthenticated === false) {
+  //   return (
+  //     <Router>
+  //       <Routes>
+  //         <Route path="*" element={<LoginPage />} />
+  //         <Route path="/login" element={<LoginPage />} />
+  //       </Routes>
+  //     </Router>
+  //   )
+  // }
 
   return (
     <Router>
@@ -277,6 +286,7 @@ function App() {
               <Route path="/defective-challan" element={<DefectiveChallan />} />
               <Route path="/work-orders" element={<WorkOrder />} />
               <Route path="/order-receiving" element={<OrderReceiving />} />
+              <Route path="*" element={<Dashboard />} />
             </Routes>
           </div>
         </main>
