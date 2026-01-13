@@ -81,14 +81,25 @@ const ServiceRequest = () => {
   const API_URL = "https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/service_request?fields=Name,Contact_Name,Appointment_Date_and_Time,Technician,Visit_Status,Service_Request_Status&page=1&per_page=200";
 
   useEffect(() => {
+    
     const fetchServiceRequests = async () => {
-      try {
+      try{
+        var auth = window.catalyst.auth;
+        await window.catalyst.auth.generateAuthToken().then(async (response) => {
+        console.log("SUCCESS: " + JSON.stringify(response));
+        try {
         setLoading(true);
-        const response = await fetch(API_URL);
-        if (!response.ok) {
+        const apiResponse = await fetch(API_URL,{
+          headers: {
+                        Authorization: `${response.access_token}`,
+                        "Content-Type": "application/json",
+                    },
+                    method: 'GET',
+        });
+        if (!apiResponse.ok) {
           throw new Error('Network response was not ok');
         }
-        const result = await response.json();
+        const result = await apiResponse.json();
         // The API returns an object with a "data" array
         setRequests(result.data || []);
       } catch (err) {
@@ -96,6 +107,21 @@ const ServiceRequest = () => {
       } finally {
         setLoading(false);
       }
+        //const token = response.access_token; 
+        //setToken(token);
+  })
+  .catch((err) => {
+    console.error("ERROR1: " + JSON.stringify(err));
+    console.log("E1: "+err.message);
+    console.log("E2: "+err);
+  });
+      }
+      catch (err) {
+        console.log("ERROR: "+JSON.stringify(err));
+        console.log("E: "+err.message);
+        console.log("E: "+err);
+      }
+      
     };
 
     fetchServiceRequests();

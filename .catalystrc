@@ -10,19 +10,25 @@
   "projects": [
     {
       "idx": 1,
-      "id": "20510000000114792",
-      "name": "VoltasPoc",
+      "id": "12130000003528107",
+      "name": "VoltasServiceManagement",
       "domain": {
-        "id": "50037384923",
-        "name": "voltaspoc-60047188318.development"
+        "id": "10068199407",
+        "name": "voltasservicemanagement-773793963.development"
       },
       "timezone": "Asia/Kolkata",
       "env": [
         {
           "idx": 1,
-          "id": "60047188318",
+          "id": "773793963",
           "name": "Development",
           "type": 3
+        },
+        {
+          "idx": 2,
+          "id": "10068358794",
+          "name": "Production",
+          "type": 1
         }
       ]
     }
