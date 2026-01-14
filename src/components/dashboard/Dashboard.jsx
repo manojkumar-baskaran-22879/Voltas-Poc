@@ -75,8 +75,41 @@
 
 import React from 'react';
 import { Clock, Check } from 'lucide-react';
+import LoginPage from '../../Login';
+import UserProfile from './UserProfile';
+import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
+
+  const [isFetching, setIsFetching] = useState(true);
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+    const [userDetails, setUserDetails] = useState({
+        firstName: "",
+        lastName: "",
+        mailid: "",
+        timeZone: "",
+        createdTime: "",
+    });
+
+  useEffect(() => {
+        window.catalyst.auth
+            .isUserAuthenticated()
+            .then((result) => {
+                setUserDetails({
+                    firstName: result.content.first_name,
+                    lastName: result.content.last_name,
+                    mailid: result.content.email_id,
+                    timeZone: result.content.time_zone,
+                    createdTime: result.content.created_time,
+                });
+                setIsUserAuthenticated(true);
+            })
+            .catch((err) => { })
+            .finally(() => {
+                setIsFetching(false);
+            });
+    }, []);
+
   const aspects = [
     { label: "Reliable Legacy", text: "Voltas has a strong history and reputation in cooling solutions." },
     { label: "Innovative Technology", text: "Known for advanced and innovative cooling technologies." },
@@ -89,6 +122,7 @@ const Dashboard = () => {
 
   return (
     // Reduced outer padding and max-width for a tighter fit
+    
     <div className="p-3 lg:p-5 max-w-6xl mx-auto space-y-5">
       <h2 className="text-xl font-bold text-slate-800 px-1">Dashboards</h2>
 
@@ -145,6 +179,17 @@ const Dashboard = () => {
       </div>
     </div>
   );
+return (
+        <>
+            {isFetching ? (
+                <p>Loading ….</p>
+            ) : isUserAuthenticated ? (
+                <UserProfile userDetails={userDetails} />
+            ) : (
+                <LoginPage />
+            )}
+        </>
+    );
 };
 
 export default Dashboard;
