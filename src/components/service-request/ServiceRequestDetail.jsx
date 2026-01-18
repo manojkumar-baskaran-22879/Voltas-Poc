@@ -39,7 +39,15 @@ const ServiceRequestDetail = () => {
     fetchDetail();
   }, [id]);
 
-  if (loading) return <div className="p-10 text-center text-slate-500">Loading request details...</div>;
+  // if (loading) return <div className="p-10 text-center text-slate-500">Loading request details...</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-600 font-medium">Loading service request details...</p>
+      </div>
+    );
+  }
   if (error) return <div className="p-10 text-center text-red-500 font-medium">Error: {error}</div>;
   if (!data) return <div className="p-10 text-center text-slate-500">No data found.</div>;
 

@@ -87,11 +87,20 @@ const ServiceRequest = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-600 font-medium">Loading service requests...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 lg:p-6 bg-slate-50 min-h-screen">
       <div className="flex justify-between items-center mb-6 px-2">
         <h2 className="text-xl font-bold text-slate-800">Service Requests</h2>
-        {loading && <span className="text-sm text-blue-600 animate-pulse font-medium">Updating data...</span>}
+        {/* {loading && <span className="text-sm text-blue-600 animate-pulse font-medium">Updating data...</span>} */}
       </div>
       
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">

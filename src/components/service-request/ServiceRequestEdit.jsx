@@ -281,9 +281,13 @@ const ServiceRequestEdit = () => {
           Product_Code: data.Product_Code?.id || '',
           
           // Step 4: Visit Info
-          Appointment_Date_and_Time: data.Appointment_Date_and_Time || '',
-          Actual_Start_Date_and_Time: data.Actual_Start_Date_and_Time || '',
-          Actual_End_Date_and_Time: data.Actual_End_Date_and_Time || '',
+          // Appointment_Date_and_Time: data.Appointment_Date_and_Time || '',
+          // Actual_Start_Date_and_Time: data.Actual_Start_Date_and_Time || '',
+          // Actual_End_Date_and_Time: data.Actual_End_Date_and_Time || '',
+
+          Appointment_Date_and_Time: formatDateTimeForInput(data.Appointment_Date_and_Time),
+          Actual_Start_Date_and_Time: formatDateTimeForInput(data.Actual_Start_Date_and_Time),
+          Actual_End_Date_and_Time: formatDateTimeForInput(data.Actual_End_Date_and_Time),
           Payment_Status: data.Payment_Status || '',
           Visit_Status: data.Visit_Status || '',
           
@@ -308,7 +312,98 @@ const ServiceRequestEdit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  if (loading) return <div className="p-20 text-center text-blue-600 font-bold animate-pulse">Loading all fields and API data...</div>;
+  const handleSubmit = async () => {
+  setLoading(true);
+  try {
+    const auth = window.catalyst.auth;
+    const { access_token } = await auth.generateAuthToken();
+
+    // Construct the payload based on your sample
+    const payload = {
+      data: [{
+        id: id, // The record ID from useParams
+        Agency: formData.Agency_ID ? { id: formData.Agency_ID } : null,
+        Technician: formData.Technician ? { id: formData.Technician } : null,
+        Contact_Name: formData.Contact_Name ? { id: formData.Contact_Name } : null,
+        Product_Code: formData.Product_Code ? { id: formData.Product_Code } : null,
+        Product_Service_Name: formData.Product_Service_Name ? { id: formData.Product_Service_Name } : {},
+        
+        Helper_First_Name: formData.Helper_First_Name,
+        Helper_Last_Name: formData.Helper_Last_Name,
+        Service_Request_Status: formData.Service_Request_Status,
+        Service_Request_Name_1: formData.Service_Request_Name,
+        Service_Request_Type: formData.Service_Request_Type,
+        Service_Request_Sub_Type: formData.Service_Request_Sub_Type,
+        Escalation: formData.Escalation,
+        Severity: formData.Severity,
+        
+        // Formatting dates back (ensuring they aren't "undefined:00")
+        Appointment_Date_and_Time: formData.Appointment_Date_and_Time ? `${formData.Appointment_Date_and_Time}:00` : null,
+        Actual_Start_Date_and_Time: formData.Actual_Start_Date_and_Time ? `${formData.Actual_Start_Date_and_Time}:00` : null,
+        Actual_End_Date_and_Time: formData.Actual_End_Date_and_Time ? `${formData.Actual_End_Date_and_Time}:00` : null,
+        
+        Payment_Status: formData.Payment_Status,
+        Visit_Status: formData.Visit_Status,
+        Fault_Group: formData.Fault_Group,
+        Action_Taken: formData.Action_Taken,
+        Description: formData.Description
+      }]
+    };
+
+    const response = await fetch(
+      `https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/service_request/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': access_token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (response.ok) {
+      // Navigate to the view page
+      navigate(`/service-request/${id}`);
+    } else {
+      const errorData = await response.json();
+      console.error("Update Failed:", errorData);
+      alert("Failed to update the record. Check console for details.");
+    }
+  } catch (err) {
+    console.error("Critical Error during update:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // if (loading) return <div className="p-20 text-center text-blue-600 font-bold animate-pulse">Loading all fields and API data...</div>;
+
+  // if (loading) {
+  //   return (
+  //     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50/80 backdrop-blur-sm">
+  //       {/* Animated Spinner */}
+  //       <div className="relative w-20 h-20">
+  //         <div className="absolute top-0 left-0 w-full h-full border-8 border-slate-200 rounded-full"></div>
+  //         <div className="absolute top-0 left-0 w-full h-full border-8 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+  //       </div>
+        
+  //       {/* Loading Text */}
+  //       {/* <p className="mt-6 text-slate-600 font-bold tracking-widest uppercase text-xs animate-pulse">
+  //         Synchronizing Data...
+  //       </p> */}
+  //     </div>
+  //   );
+  // }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-600 font-medium">Loading service request details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-slate-50 min-h-screen">
@@ -318,7 +413,7 @@ const ServiceRequestEdit = () => {
         <div className="p-8 bg-white border-b border-slate-100">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-black text-slate-800 tracking-tight">Edit Service Request</h1>
-            <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase">Step {currentStep} / 5</span>
+            <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase">Step {currentStep}/5</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div className="bg-blue-600 h-full transition-all duration-500" style={{ width: `${(currentStep / 5) * 100}%` }} />
@@ -337,8 +432,10 @@ const ServiceRequestEdit = () => {
                 <Input label="Helper Last Name" name="Helper_Last_Name" value={formData.Helper_Last_Name} onChange={handleInputChange} />
                 <Select label="Status" name="Service_Request_Status" value={formData.Service_Request_Status} onChange={handleInputChange} options={['Open', 'In Progress', 'On Hold', 'Completed', 'Closed']} />
                 <Input label="SR Name" name="Service_Request_Name" value={formData.Service_Request_Name} onChange={handleInputChange} />
-                <Select label="Type" name="Service_Request_Type" value={formData.Service_Request_Type} onChange={handleInputChange} options={['Repair', 'Installation', 'Maintenance']} />
+                <Select label="SR Type" name="Service_Request_Type" value={formData.Service_Request_Type} onChange={handleInputChange} options={['Technical', 'Query']} />
+                <Select label="SR Sub Type" name="Service_Request_Sub_Type" value={formData.Service_Request_Sub_Type} onChange={handleInputChange} options={['Repair', 'Installation', 'Maintenance']} />
                 <Select label="Escalation" name="Escalation" value={formData.Escalation} onChange={handleInputChange} options={['Normal', 'Medium', 'High']} />
+                <Select label="Severity" name="Severity" value={formData.Severity} onChange={handleInputChange} options={['Normal', 'Low', 'High']} />
               </div>
             </div>
           )}
@@ -347,7 +444,7 @@ const ServiceRequestEdit = () => {
           {currentStep === 2 && (
             <div className="space-y-6 animate-in slide-in-from-right-5">
               <Dropdown label="Contact Name" name="Contact_Name" value={formData.Contact_Name} options={options.contacts} labelKey="fullName" onChange={handleInputChange} />
-              <p className="text-slate-400 text-sm italic">Additional contact details are pulled automatically based on the selection above.</p>
+              {/* <p className="text-slate-400 text-sm italic">Additional contact details are pulled automatically based on the selection above.</p> */}
             </div>
           )}
 
@@ -365,8 +462,8 @@ const ServiceRequestEdit = () => {
                 <Input label="Appointment Time" name="Appointment_Date_and_Time" type="datetime-local" value={formData.Appointment_Date_and_Time} onChange={handleInputChange} />
                 <Input label="Actual Start" name="Actual_Start_Date_and_Time" type="datetime-local" value={formData.Actual_Start_Date_and_Time} onChange={handleInputChange} />
                 <Input label="Actual End" name="Actual_End_Date_and_Time" type="datetime-local" value={formData.Actual_End_Date_and_Time} onChange={handleInputChange} />
-                <Select label="Payment Status" name="Payment_Status" value={formData.Payment_Status} onChange={handleInputChange} options={['Pending', 'Paid', 'Partial']} />
-                <Select label="Visit Status" name="Visit_Status" value={formData.Visit_Status} onChange={handleInputChange} options={['Scheduled', 'Arrived', 'In-Progress', 'Departed']} />
+                <Select label="Payment Status" name="Payment_Status" value={formData.Payment_Status} onChange={handleInputChange} options={['Paid', 'Not Paid']} />
+                <Select label="Visit Status" name="Visit_Status" value={formData.Visit_Status} onChange={handleInputChange} options={['Scheduled', 'Un Scheduled', 'Completed']} />
               </div>
             </div>
           )}
@@ -375,10 +472,11 @@ const ServiceRequestEdit = () => {
           {currentStep === 5 && (
             <div className="space-y-6 animate-in slide-in-from-right-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input label="Fault Group" name="Fault_Group" value={formData.Fault_Group} onChange={handleInputChange} />
-                <Input label="Action Taken" name="Action_Taken" value={formData.Action_Taken} onChange={handleInputChange} />
+                {/* <Input label="Fault Group" name="Fault_Group" value={formData.Fault_Group} onChange={handleInputChange} /> */}
+                <Select label="Fault Group" name="Fault_Group" value={formData.Fault_Group} onChange={handleInputChange} options={['Accessories', 'Workshop', 'Sensor', 'AMC', 'Coil', 'Condensor Coil', 'Service']} />
+                <Select label="Action Taken" name="Action_Taken" value={formData.Action_Taken} onChange={handleInputChange} options={['Part Replaced', 'Pair Repaired', 'Full Repaired']} />
               </div>
-              <Dropdown label="Product/Service Used" name="Product_Service_Name" value={formData.Product_Service_Name} options={options.serviceProducts} labelKey="Product_Name" onChange={handleInputChange} />
+              <Dropdown label="Product Service Name" name="Product_Service_Name" value={formData.Product_Service_Name} options={options.serviceProducts} labelKey="Product_Name" onChange={handleInputChange} />
               <div>
                 <label className="block text-slate-500 text-xs font-bold mb-2 uppercase tracking-widest">Final Description</label>
                 <textarea name="Description" value={formData.Description} onChange={handleInputChange} className="w-full p-4 border border-slate-200 rounded-2xl bg-slate-50 focus:ring-4 focus:ring-blue-100 outline-none h-32 transition-all" />
@@ -393,11 +491,17 @@ const ServiceRequestEdit = () => {
           <button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 1} className="text-slate-400 font-bold hover:text-blue-600 disabled:opacity-0 transition-all">Back</button>
           <div className="flex gap-4">
              <button onClick={() => navigate(-1)} className="text-slate-500 font-bold px-4">Cancel</button>
-             <button 
+             {/* <button 
                 onClick={() => currentStep < 5 ? setCurrentStep(s => s + 1) : console.log("Updating Record...", formData)}
                 className="bg-blue-600 text-white px-10 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition-all transform active:scale-95"
               >
-                {currentStep === 5 ? 'Save Changes' : 'Next Step'}
+                {currentStep === 5 ? 'Save Changes' : 'Next'}
+              </button> */}
+              <button 
+                onClick={() => currentStep < 5 ? setCurrentStep(s => s + 1) : handleSubmit()}
+                className="bg-blue-600 text-white px-10 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition-all transform active:scale-95"
+              >
+                {currentStep === 5 ? 'Save Changes' : 'Next'}
               </button>
           </div>
         </div>
@@ -434,5 +538,12 @@ const Dropdown = ({ label, name, value, options, labelKey, onChange }) => (
     </select>
   </div>
 );
+
+const formatDateTimeForInput = (dateString) => {
+  if (!dateString) return '';
+  // This takes "2024-01-03T20:00:00+05:30" and returns "2024-01-03T20:00"
+  return dateString.split('.')[0].substring(0, 16);
+};
+
 
 export default ServiceRequestEdit;
