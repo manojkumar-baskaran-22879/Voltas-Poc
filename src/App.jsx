@@ -514,6 +514,7 @@ function AppLayout({ isSidebarOpen, setSidebarOpen }) {
             <Route path="/estimations/:id" element={<EstimationDetails />} />
             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </main>

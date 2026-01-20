@@ -501,7 +501,7 @@ const ServiceRequestEdit = () => {
                 onClick={() => currentStep < 5 ? setCurrentStep(s => s + 1) : handleSubmit()}
                 className="bg-blue-600 text-white px-10 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition-all transform active:scale-95"
               >
-                {currentStep === 5 ? 'Save Changes' : 'Next'}
+                {currentStep === 5 ? 'Save' : 'Next'}
               </button>
           </div>
         </div>

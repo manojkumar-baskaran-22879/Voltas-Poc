@@ -33,4 +33,11 @@ const LoginPage = () => {
         </>
     );
 };
+
+// function LoginPage() {
+//     useEffect(() => {
+//         window.location.href = window.origin + "/__catalyst/auth/login?redirect_url=/dashboard";
+//     }, []);
+//     return null;
+// }
 export default LoginPage;
