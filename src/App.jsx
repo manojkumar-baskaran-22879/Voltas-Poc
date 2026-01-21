@@ -1,164 +1,3 @@
-
-// import React, { useState, useEffect } from 'react';
-// import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-// import {
-//   LayoutDashboard,
-//   ClipboardList,
-//   Menu,
-//   X,
-//   Calculator,
-//   Package,
-//   RotateCcw,
-//   FileWarning,
-//   Wrench,
-//   Truck,
-//   UserCircle, // New profile icon
-//   CircleUser
-// } from 'lucide-react';
-
-// import Dashboard from './components/dashboard/Dashboard';
-// import ServiceRequest from './components/service-request/ServiceRequest';
-// import Estimations from './components/estimations/Estimations';
-// import AgencyStock from './components/agency/AgencyStock';
-// import SalesReturn from './components/sales-return/SalesReturn';
-// import DefectiveChallan from './components/defective-challan/DefectiveChallan';
-// import WorkOrder from './components/work-order/WorkOrder';
-// import OrderReceiving from './components/order/OrderReceiving';
-// import EstimationDetails from './components/estimations/EstimationDetails';
-// import ServiceRequestDetail from './components/service-request/ServiceRequestDetail';
-// import ServiceRequestEdit from './components/service-request/ServiceRequestEdit';
-
-// import LoginPage from './Login';
-
-// function App() {
-//   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-//   return (
-//     <Router>
-//       <Routes>
-//         {/* All Routes */}
-//         <Route
-//           path="/*"
-//           element={<AppLayout isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />}
-//         />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// function AppLayout({ isSidebarOpen, setSidebarOpen }) {
-//   return (
-//     <div className="flex h-screen bg-slate-50 overflow-hidden">
-//       {/* 1. MOBILE SIDEBAR OVERLAY */}
-//       {isSidebarOpen && (
-//         <div
-//           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
-//           onClick={() => setSidebarOpen(false)}
-//         />
-//       )}
-
-//       {/* 2. SIDEBAR NAVIGATION */}
-//       <aside className={`
-//         fixed lg:static inset-y-0 left-0 z-30 w-64 bg-blue-900 text-white 
-//         transition-transform duration-300 ease-in-out
-//         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-//       `}>
-//         <div className="flex items-center justify-between p-6 border-b border-blue-800">
-//           <span className="text-xl font-bold tracking-wide">VOLTAS</span>
-//           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-blue-300 hover:text-white">
-//             <X size={24} />
-//           </button>
-//         </div>
-
-//         <nav className="p-4 space-y-2">
-//           <Link to="/" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={LayoutDashboard} label="Dashboard" />
-//           </Link>
-//           <Link to="/service-requests" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={ClipboardList} label="Service Requests" />
-//           </Link>
-//           <Link to="/estimations" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={Calculator} label="Estimations" />
-//           </Link>
-//           <Link to="/agency-stock" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={Package} label="Agency Wise Stock" />
-//           </Link>
-//           <Link to="/sales-return" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={RotateCcw} label="Sales Return Order" />
-//           </Link>
-//           <Link to="/defective-challan" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={FileWarning} label="Defective Challan" />
-//           </Link>
-//           <Link to="/work-orders" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={Wrench} label="Work Order" />
-//           </Link>
-//           <Link to="/order-receiving" onClick={() => setSidebarOpen(false)}>
-//             <NavItem icon={Truck} label="Order Receiving" />
-//           </Link>
-//         </nav>
-//       </aside>
-
-//       {/* 3. MAIN CONTENT AREA */}
-//       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-//         {/* Adjusted Top Header: Reduced height (h-12), removed Search and Title */}
-//         <header className="h-12 bg-white shadow-sm flex items-center justify-between px-4 lg:px-6 shrink-0">
-//           <div>
-//             {/* Hamburger visible only on mobile */}
-//             <button
-//               onClick={() => setSidebarOpen(true)}
-//               className="p-1 text-slate-600 rounded-md hover:bg-slate-100 lg:hidden"
-//             >
-//               <Menu size={22} />
-//             </button>
-//           </div>
-
-//           <div className="flex items-center gap-4">
-//             {/* Profile Icon instead of initials */}
-//             <button className="text-slate-400 hover:text-blue-600 transition-colors">
-//               <CircleUser size={28} strokeWidth={1.5} />
-//             </button>
-//           </div>
-//         </header>
-
-//         {/* Scrollable Viewport */}
-//         <div className="flex-1 overflow-y-auto">
-//           <Routes>
-//             <Route path="/" element={<Dashboard />} />
-//             <Route path="/service-requests" element={<ServiceRequest />} />
-//             <Route path="/estimations" element={<Estimations />} />
-//             <Route path="/agency-stock" element={<AgencyStock />} />
-//             <Route path="/sales-return" element={<SalesReturn />} />
-//             <Route path="/defective-challan" element={<DefectiveChallan />} />
-//             <Route path="/work-orders" element={<WorkOrder />} />
-//             <Route path="/order-receiving" element={<OrderReceiving />} />
-//             <Route path="/estimations/:id" element={<EstimationDetails />} />
-//             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
-//             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
-//           </Routes>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
-
-// function NavItem({ icon: Icon, label }) {
-//   // Logic to highlight active link can be added here using useLocation()
-//   return (
-//     <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer text-blue-100 hover:bg-blue-800/50 hover:text-white transition-colors">
-//       <Icon size={20} />
-//       <span className="font-medium text-sm">{label}</span>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-// ------------------------------
-
-
-
-
 // import React, { useState, useEffect } from 'react';
 // import {
 //   BrowserRouter as Router,
@@ -184,77 +23,76 @@
 // import Dashboard from './components/dashboard/Dashboard';
 // import ServiceRequest from './components/service-request/ServiceRequest';
 // import Estimations from './components/estimations/Estimations';
+// import EstimationDetails from './components/estimations/EstimationDetails';
 // import AgencyStock from './components/agency/AgencyStock';
 // import SalesReturn from './components/sales-return/SalesReturn';
 // import DefectiveChallan from './components/defective-challan/DefectiveChallan';
 // import WorkOrder from './components/work-order/WorkOrder';
 // import OrderReceiving from './components/order/OrderReceiving';
-// import EstimationDetails from './components/estimations/EstimationDetails';
+
+// import ServiceRequestDetail from './components/service-request/ServiceRequestDetail';
+// import ServiceRequestEdit from './components/service-request/ServiceRequestEdit';
+// //import EstimationDetails from './components/estimations/EstimationDetails';
 
 // import LoginPage from './Login';
-
-// /* =======================
-//    AUTH GUARD
-// ======================= */
-// function ProtectedRoute({ isAuthenticated, children }) {
-//   if (isAuthenticated === null) {
-//     return <div className="h-screen flex items-center justify-center">Loading...</div>;
-//   }
-
-//   if (isAuthenticated === false) {
-//     return <Navigate to="/login" replace />;
-//   }
-
-//   return children;
-// }
 
 // /* =======================
 //    MAIN APP
 // ======================= */
 // function App() {
 //   const [isSidebarOpen, setSidebarOpen] = useState(false);
-//   const [isUserAuthenticated, setIsUserAuthenticated] = useState(null);
+//   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
 //   useEffect(() => {
-//     const authenticateUser = async () => {
+//     const checkAuth = async () => {
 //       try {
 //         await window.catalyst.auth.isUserAuthenticated();
-//         setIsUserAuthenticated(true);
-//       } catch (err) {
-//         setIsUserAuthenticated(false);
+//         setIsAuthenticated(true);
+//       } catch {
+//         setIsAuthenticated(false);
 //       }
 //     };
-//     authenticateUser();
+//     checkAuth();
 //   }, []);
+
+//   /* ---- AUTH LOADING STATE ---- */
+//   if (isAuthenticated === null) {
+//     return (
+//       <div className="h-screen flex items-center justify-center">
+//         Loading...
+//       </div>
+//     );
+//   }
 
 //   return (
 //     <Router>
-//       <Routes>
-
-//         {/* ---------- LOGIN (PUBLIC) ---------- */}
-//         <Route
-//           path="/login"
-//           element={
-//             isUserAuthenticated
-//               ? <Navigate to="/" replace />
-//               : <LoginPage />
-//           }
-//         />
-
-//         {/* ---------- PROTECTED APP ---------- */}
-//         <Route
-//           path="/*"
-//           element={
-//             <ProtectedRoute isAuthenticated={isUserAuthenticated}>
+//       {isAuthenticated ? (
+//         /* =======================
+//            PRIVATE ROUTES
+//         ======================= */
+//         <Routes>
+//           <Route
+//             path="/*"
+//             element={
 //               <AppLayout
 //                 isSidebarOpen={isSidebarOpen}
 //                 setSidebarOpen={setSidebarOpen}
 //               />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//       </Routes>
+//             }
+//           />
+//           {/* Prevent access to login after auth */}
+//           <Route path="/login" element={<Navigate to="/" replace />} />
+//         </Routes>
+//       ) : (
+//         /* =======================
+//            PUBLIC ROUTES
+//         ======================= */
+//         <Routes>
+//           <Route path="/login" element={<LoginPage />} />
+//           {/* Catch all → login */}
+//           <Route path="*" element={<Navigate to="/login" replace />} />
+//         </Routes>
+//       )}
 //     </Router>
 //   );
 // }
@@ -266,7 +104,6 @@
 //   return (
 //     <div className="flex h-screen bg-slate-50 overflow-hidden">
 
-//       {/* Mobile Overlay */}
 //       {isSidebarOpen && (
 //         <div
 //           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
@@ -301,20 +138,13 @@
 
 //       {/* Main */}
 //       <main className="flex-1 flex flex-col overflow-hidden">
-
-//         {/* Header */}
 //         <header className="h-12 bg-white shadow-sm flex items-center justify-between px-4">
-//           <button
-//             onClick={() => setSidebarOpen(true)}
-//             className="lg:hidden"
-//           >
+//           <button onClick={() => setSidebarOpen(true)} className="lg:hidden">
 //             <Menu />
 //           </button>
-
 //           <CircleUser size={26} className="text-slate-500" />
 //         </header>
 
-//         {/* Pages */}
 //         <div className="flex-1 overflow-y-auto">
 //           <Routes>
 //             <Route path="/" element={<Dashboard />} />
@@ -326,9 +156,12 @@
 //             <Route path="/defective-challan" element={<DefectiveChallan />} />
 //             <Route path="/work-orders" element={<WorkOrder />} />
 //             <Route path="/order-receiving" element={<OrderReceiving />} />
+//             <Route path="/estimations/:id" element={<EstimationDetails />} />
+//             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
+//             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
+//             <Route path="/dashboard" element={<Dashboard />} />
 //           </Routes>
 //         </div>
-
 //       </main>
 //     </div>
 //   );
@@ -341,7 +174,10 @@
 
 // function NavLink({ icon: Icon, label, to }) {
 //   return (
-//     <Link to={to} className="flex items-center gap-3 p-3 rounded-lg text-blue-100 hover:bg-blue-800/50">
+//     <Link
+//       to={to}
+//       className="flex items-center gap-3 p-3 rounded-lg text-blue-100 hover:bg-blue-800/50"
+//     >
 //       <Icon size={20} />
 //       <span className="text-sm font-medium">{label}</span>
 //     </Link>
@@ -351,14 +187,13 @@
 // export default App;
 
 
-//------------------------------------
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate
+  Navigate,
+  Link
 } from 'react-router-dom';
 
 import {
@@ -372,9 +207,11 @@ import {
   FileWarning,
   Wrench,
   Truck,
-  CircleUser
+  CircleUser,
+  LogOut
 } from 'lucide-react';
 
+/* --- Component Imports --- */
 import Dashboard from './components/dashboard/Dashboard';
 import ServiceRequest from './components/service-request/ServiceRequest';
 import Estimations from './components/estimations/Estimations';
@@ -384,12 +221,12 @@ import SalesReturn from './components/sales-return/SalesReturn';
 import DefectiveChallan from './components/defective-challan/DefectiveChallan';
 import WorkOrder from './components/work-order/WorkOrder';
 import OrderReceiving from './components/order/OrderReceiving';
-
 import ServiceRequestDetail from './components/service-request/ServiceRequestDetail';
 import ServiceRequestEdit from './components/service-request/ServiceRequestEdit';
-//import EstimationDetails from './components/estimations/EstimationDetails';
-
 import LoginPage from './Login';
+import AgencyStockDetails from './components/agency/AgencyStockDetails';
+import SalesReturnDetails from './components/sales-return/SalesReturnDetails';
+import DefectiveChallanDetails from './components/defective-challan/DefectiveChallanDetails';
 
 /* =======================
    MAIN APP
@@ -410,21 +247,26 @@ function App() {
     checkAuth();
   }, []);
 
-  /* ---- AUTH LOADING STATE ---- */
+  // if (isAuthenticated === null) {
+  //   return (
+  //     <div className="h-screen flex items-center justify-center bg-slate-50 font-sans">
+  //       <div className="animate-pulse text-blue-900 font-medium">Loading...</div>
+  //     </div>
+  //   );
+  // }
+
   if (isAuthenticated === null) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
+        return (
+            <div className="flex flex-col items-center justify-center h-screen space-y-4 bg-white">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-100 border-t-[#0070BA]"></div>
+            <p className="text-gray-400 text-sm font-medium">Loading...</p>
+        </div>
+        );
+    }
 
   return (
     <Router>
       {isAuthenticated ? (
-        /* =======================
-           PRIVATE ROUTES
-        ======================= */
         <Routes>
           <Route
             path="/*"
@@ -435,16 +277,11 @@ function App() {
               />
             }
           />
-          {/* Prevent access to login after auth */}
           <Route path="/login" element={<Navigate to="/" replace />} />
         </Routes>
       ) : (
-        /* =======================
-           PUBLIC ROUTES
-        ======================= */
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          {/* Catch all → login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       )}
@@ -456,30 +293,50 @@ function App() {
    APP LAYOUT (AUTH ONLY)
 ======================= */
 function AppLayout({ isSidebarOpen, setSidebarOpen }) {
-  return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+  const [isProfileOpen, setProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    // Replace with: window.catalyst.auth.signOut('/');
+    console.log("Logging out...");
+  };
+
+  return (
+    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
+      
+      {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-30 w-64 bg-blue-900 text-white
-        transition-transform duration-300
+        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-blue-900 text-white
+        transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex items-center justify-between p-6 border-b border-blue-800">
-          <span className="text-xl font-bold">VOLTAS</span>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
-            <X />
+          <span className="text-xl font-bold tracking-tight">VOLTAS</span>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden hover:bg-blue-800 p-1 rounded">
+            <X size={24} />
           </button>
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-8 overflow-y-auto h-[calc(100vh-80px)]">
           <NavLink icon={LayoutDashboard} label="Dashboard" to="/" />
           <NavLink icon={ClipboardList} label="Service Requests" to="/service-requests" />
           <NavLink icon={Calculator} label="Estimations" to="/estimations" />
@@ -487,31 +344,73 @@ function AppLayout({ isSidebarOpen, setSidebarOpen }) {
           <NavLink icon={RotateCcw} label="Sales Return Order" to="/sales-return" />
           <NavLink icon={FileWarning} label="Defective Challan" to="/defective-challan" />
           <NavLink icon={Wrench} label="Work Order" to="/work-orders" />
-          <NavLink icon={Truck} label="Order Receiving" to="/order-receiving" />
+          {/* <NavLink icon={Truck} label="Order Receiving" to="/order-receiving" /> */}
         </nav>
       </aside>
 
-      {/* Main */}
+      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-12 bg-white shadow-sm flex items-center justify-between px-4">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden">
-            <Menu />
-          </button>
-          <CircleUser size={26} className="text-slate-500" />
+        
+        {/* Header */}
+        <header className="h-14 bg-white shadow-sm border-b border-slate-200 flex items-center justify-between px-6 z-30">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSidebarOpen(true)} 
+              className="lg:hidden text-slate-600 hover:bg-slate-100 p-1 rounded"
+            >
+              <Menu size={24} />
+            </button>
+            {/* <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider hidden sm:block">
+              Internal Portal
+            </h2> */}
+          </div>
+
+          {/* Profile Dropdown Container */}
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={() => setProfileOpen(!isProfileOpen)}
+              className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 transition-colors"
+            >
+              <CircleUser size={28} className="text-slate-600" />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-lg shadow-xl py-2 z-50 animate-in fade-in zoom-in duration-150">
+                <div className="px-4 py-3 border-b border-slate-100">
+                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-normal">Account</p>
+                  <p className="text-sm font-medium text-slate-700 truncate">testaccounttest@gmail.com</p>
+                </div>
+                
+                <div className="py-1">
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut size={16} />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto">
+        {/* Dynamic Route Content */}
+        <div className="flex-1 overflow-y-auto bg-slate-50 p-4 lg:p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/service-requests" element={<ServiceRequest />} />
             <Route path="/estimations" element={<Estimations />} />
             <Route path="/estimations/:id" element={<EstimationDetails />} />
             <Route path="/agency-stock" element={<AgencyStock />} />
+            <Route path="/agency-stock/:id" element={<AgencyStockDetails />} />
             <Route path="/sales-return" element={<SalesReturn />} />
+            <Route path="/sales-return/:id" element={<SalesReturnDetails />} />
             <Route path="/defective-challan" element={<DefectiveChallan />} />
+            <Route path="/defective-challan/:id" element={<DefectiveChallanDetails />} />
             <Route path="/work-orders" element={<WorkOrder />} />
             <Route path="/order-receiving" element={<OrderReceiving />} />
-            <Route path="/estimations/:id" element={<EstimationDetails />} />
             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -525,15 +424,13 @@ function AppLayout({ isSidebarOpen, setSidebarOpen }) {
 /* =======================
    NAV ITEM
 ======================= */
-import { Link } from 'react-router-dom';
-
 function NavLink({ icon: Icon, label, to }) {
   return (
     <Link
       to={to}
-      className="flex items-center gap-3 p-3 rounded-lg text-blue-100 hover:bg-blue-800/50"
+      className="flex items-center gap-3 p-3 rounded-lg text-blue-100 hover:bg-white/10 transition-colors group"
     >
-      <Icon size={20} />
+      <Icon size={20} className="group-hover:text-white transition-colors" />
       <span className="text-sm font-medium">{label}</span>
     </Link>
   );

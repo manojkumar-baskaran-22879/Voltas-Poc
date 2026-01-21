@@ -130,9 +130,12 @@ const Dashboard = () => {
         'dealer_yearly_request_count'
       ];
 
+      const authResponse = await window.catalyst.auth.generateAuthToken();
+      const token = authResponse.access_token;
+
       const results = await Promise.all(
         endpoints.map(path => 
-          fetch(`https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/dashboard/${path}`)
+          fetch(`https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/dashboard/${path}`,{headers: {Authorization: `${token}`,'Content-Type': 'application/json'}})
           .then(res => res.json())
           .catch(() => ({ count: 0 }))
         )
@@ -164,7 +167,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between mb-8 w-full">
           <div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Service Overview</h1>
-            <p className="text-slate-500 font-medium">Performance Metrics</p>
+            {/* <p className="text-slate-500 font-medium">Performance Metrics</p> */}
           </div>
           
           <button 

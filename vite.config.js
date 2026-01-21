@@ -15,7 +15,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      workbox: { navigateFallbackDenylist: [/^\/accounts/,/^\/__catalyst/]}, // Exclude /admin and /api routes },
+      // workbox: { navigateFallbackDenylist: [/^\/accounts/,/^\/__catalyst/]}, // Exclude /admin and /api routes },
+      workbox: { navigateFallbackDenylist: [/^\/accounts/, /^\/api/]}, // Exclude /admin and /api routes },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'Voltas Service Dashboard',

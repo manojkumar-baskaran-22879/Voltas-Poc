@@ -10,7 +10,7 @@ const LoginPage = () => {
             //forgot_password_id: "login", // Element id in which forgot password page should be loaded, by default will render in the "loginDivElementId"
             //forgot_password_css_url: "/fpwd.css", // Forgot password page customization css file path, if not provided default css will be rendered
             // redirect_url: window.host + window.location.origin + "/"
-            //service_url: window.location.origin + "/" 
+            service_url: window.location.origin + "/" 
         }
         catalyst.auth.signIn("login", config);
     }, []);
