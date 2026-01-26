@@ -227,6 +227,8 @@ import LoginPage from './Login';
 import AgencyStockDetails from './components/agency/AgencyStockDetails';
 import SalesReturnDetails from './components/sales-return/SalesReturnDetails';
 import DefectiveChallanDetails from './components/defective-challan/DefectiveChallanDetails';
+import { WorkOrderDetails } from './components/work-order/WorkOrderDetails';
+import OrderReceivingDetails from './components/order/OrderReceivingDetails';
 
 /* =======================
    MAIN APP
@@ -344,7 +346,7 @@ function AppLayout({ isSidebarOpen, setSidebarOpen }) {
           <NavLink icon={RotateCcw} label="Sales Return Order" to="/sales-return" />
           <NavLink icon={FileWarning} label="Defective Challan" to="/defective-challan" />
           <NavLink icon={Wrench} label="Work Order" to="/work-orders" />
-          {/* <NavLink icon={Truck} label="Order Receiving" to="/order-receiving" /> */}
+          <NavLink icon={Truck} label="Order Receiving" to="/order-receiving" />
         </nav>
       </aside>
 
@@ -410,7 +412,9 @@ function AppLayout({ isSidebarOpen, setSidebarOpen }) {
             <Route path="/defective-challan" element={<DefectiveChallan />} />
             <Route path="/defective-challan/:id" element={<DefectiveChallanDetails />} />
             <Route path="/work-orders" element={<WorkOrder />} />
+            <Route path="/work-order/:id" element={<WorkOrderDetails />} />
             <Route path="/order-receiving" element={<OrderReceiving />} />
+            <Route path="/order-receiving/:id" element={<OrderReceivingDetails />} />
             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
             <Route path="/dashboard" element={<Dashboard />} />

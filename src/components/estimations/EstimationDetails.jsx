@@ -136,7 +136,7 @@ const EstimationDetails = () => {
                             <ChevronLeft size={20} />
                         </button>
                         <div>
-                            <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.15em]">Estimation Document</span>
+                            {/* <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.15em]">Estimation Document</span> */}
                             <h1 className="text-xl md:text-2xl font-black text-gray-900 leading-none mt-1">{data.Quote_Number}</h1>
                         </div>
                     </div>

@@ -1,74 +1,138 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const OrderReceiving = () => {
-  // Mock Data based on the Order Receiving image
-  const orderData = [
-    { id: 'OR202300027', email: '', challanId: '', returnId: '', status: 'Partially Received' },
-    { id: 'OR202300026', email: 'prateek.agarwal@exampl...', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300025', email: 'divya.mahajan@example.i...', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300024', email: 'amar.yadav@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300023', email: 'pooja.banerjee@example.i...', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300022', email: 'sneha.gupta@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300021', email: 'ananya.singh@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300020', email: 'arjun.patel@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300019', email: 'anjali.rawat@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300018', email: 'ravi.thakur@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300017', email: 'rohit.kumar@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300016', email: 'rahul.mittal@example.in', challanId: '', returnId: '', status: '' },
-    { id: 'OR202300015', email: 'vikram.joshi@example.in', challanId: '', returnId: '', status: '' },
-  ];
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="p-4 lg:p-6 bg-slate-50 min-h-full">
-      {/* Header Section */}
-      <div className="flex justify-between items-center mb-6 px-2">
-        <h2 className="text-xl font-bold text-slate-800">Order Receiving</h2>
-      </div>
-      
-      {/* Table Container */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-blue-50/50 text-blue-600 text-[11px] font-bold uppercase tracking-wider border-b border-slate-100">
-                <th className="px-6 py-4">Order ID</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Defective Challan ID</th>
-                <th className="px-6 py-4">Sales Return ID</th>
-                <th className="px-6 py-4">Order Receiving Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {orderData.map((item, idx) => (
-                <tr key={idx} className="hover:bg-slate-50 transition-colors text-sm text-slate-600">
-                  <td className="px-6 py-4 whitespace-nowrap text-blue-500 font-medium cursor-pointer hover:underline">
-                    {item.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-slate-500">
-                    {item.email || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-slate-400 italic text-xs">
-                    {item.challanId || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-slate-400 italic text-xs">
-                    {item.returnId || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {item.status && (
-                      <span className="px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700">
-                        {item.status}
-                      </span>
-                    )}
-                    {!item.status && <span className="text-slate-300">-</span>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    const navigate = useNavigate();
+
+    const apiUrl = "https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/order_receiving?fields=Name,Email,Order_Receiving_Status,Defective_Challan_ID,Sales_Return_ID&page=1&per_page=200";
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchOrders = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch Auth Token
+                const authResponse = await window.catalyst.auth.generateAuthToken();
+                const token = authResponse.access_token;
+
+                const apiResponse = await fetch(apiUrl, {
+                    headers: {
+                        Authorization: `${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    method: 'GET',
+                });
+
+                if (!apiResponse.ok) {
+                    throw new Error(`Error ${apiResponse.status}: Failed to fetch orders`);
+                }
+
+                const result = await apiResponse.json();
+
+                if (isMounted) {
+                    setOrders(result.data || []);
+                }
+            } catch (err) {
+                if (isMounted) {
+                    setError(err.message);
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchOrders();
+        return () => { isMounted = false; };
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen space-y-4 bg-white">
+                <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-100 border-t-[#0070BA]"></div>
+                <p className="text-gray-400 text-sm font-medium">Loading...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return <div className="p-10 text-red-500 text-center bg-red-50 rounded-lg m-8">Error: {error}</div>;
+    }
+
+    return (
+        <div className="px-4 pb-8 bg-slate-50/50 min-h-screen">
+            {/* Header Section */}
+            <div className="flex justify-between items-center py-4">
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Order Receiving</h2>
+                </div>
+            </div>
+            
+            {/* Table Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50 border-b border-slate-200">
+                                <th className="px-6 py-4 text-[13px] font-bold text-slate-600 uppercase tracking-wide">Order ID</th>
+                                <th className="px-6 py-4 text-[13px] font-bold text-slate-600 uppercase tracking-wide">Email</th>
+                                <th className="px-6 py-4 text-[13px] font-bold text-slate-600 uppercase tracking-wide">Defective Challan ID</th>
+                                <th className="px-6 py-4 text-[13px] font-bold text-slate-600 uppercase tracking-wide">Sales Return ID</th>
+                                <th className="px-6 py-4 text-[13px] font-bold text-slate-600 uppercase tracking-wide">Order Receiving Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {orders.length > 0 ? (
+                                orders.map((item, index) => (
+                                    <tr key={item.id || index} className="hover:bg-slate-50/80 transition-colors group">
+                                        <td className="px-6 py-5 whitespace-nowrap">                    
+                                            <button 
+                                                onClick={() => navigate(`/order-receiving/${item.id}`)}
+                                                className="text-blue-600 font-bold text-sm hover:text-blue-800 transition-colors duration-200"
+                                            >
+                                                {item.Name || '-'}
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap text-sm text-slate-600 font-medium">
+                                            {item.Email || '-'}
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap text-sm text-slate-700">
+                                            {item.Defective_Challan_ID || '-'}
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap text-sm text-slate-700">
+                                            {item.Sales_Return_ID || '-'}
+                                        </td>
+                                        <td className="px-6 py-5 text-sm">
+                                            {item.Order_Receiving_Status ? (
+                                                <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                                    {item.Order_Receiving_Status}
+                                                </span>
+                                            ) : (
+                                                <span className="text-slate-400">-</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-10 text-center text-slate-400 text-sm">
+                                        No records found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default OrderReceiving;

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [token, setToken] = useState('');
+  const navigate = useNavigate();
   
   // 1. Form State
   const [formData, setFormData] = useState({
@@ -148,7 +150,8 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
 
       if (result.status === "success" || (result.data && result.data[0]?.status === "success")) {
         //alert(editData ? "Estimation Updated Successfully!" : "Estimation Created Successfully!");
-        if (refreshData) refreshData();
+        if (refreshData){ refreshData(); }
+        else{navigate(`/estimations/${result.data[0].details.id}`);}
         onClose();
       }
     } catch (error) {

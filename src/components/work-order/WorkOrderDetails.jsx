@@ -1,105 +1,17 @@
-// import React, { useState, useEffect } from 'react';
-
-// export const WorkOrderDetails = ({ orderId, onBack }) => {
-//   const [data, setData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchDetail = async () => {
-//       try {
-//         const authResponse = await window.catalyst.auth.generateAuthToken();
-//         const response = await fetch(`https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/work_order/${orderId}`, {
-//           headers: { Authorization: authResponse.access_token }
-//         });
-//         const result = await response.json();
-//         setData(result.data[0]);
-//       } catch (err) {
-//         console.error(err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchDetail();
-//   }, [orderId]);
-
-//   if (loading) return <div className="p-10 text-center font-sans">Loading Order Details...</div>;
-//   if (!data) return <div className="p-10 text-center">No data found.</div>;
-
-//   return (
-//     <div className="min-h-screen bg-white font-sans text-slate-800">
-//       {/* Top Navigation Bar */}
-//       <div className="border-b border-slate-200 px-8 py-4 flex items-center justify-between bg-white sticky top-0 z-10">
-//         <div className="flex items-center gap-4">
-//           <button onClick={onBack} className="text-slate-400 hover:text-slate-600 transition-colors">
-//             ← Back
-//           </button>
-//           <h1 className="text-xl font-bold tracking-tight">{data.Subject}</h1>
-//           <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{data.Status}</span>
-//         </div>
-//         <div className="flex gap-3">
-//           <button className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold hover:bg-slate-50">Edit</button>
-//           <button className="px-4 py-2 bg-[#00579c] text-white rounded-lg text-sm font-semibold shadow-md">Submit</button>
-//         </div>
-//       </div>
-
-//       <div className="p-8 max-w-6xl mx-auto">
-//         {/* Info Grid */}
-//         <div className="grid grid-cols-2 gap-x-12 gap-y-6 mb-12">
-//           <DetailItem label="Work Order Number" value={data.SO_Number} />
-//           <DetailItem label="Work Order Owner" value={data.Owner?.name} />
-//           <DetailItem label="Contact Name" value={data.Contact_Name?.name} />
-//           <DetailItem label="Account Name" value={data.Account_Name?.name} />
-//           <DetailItem label="Status" value={data.Status} />
-//           <DetailItem label="Grand Total" value={`${data.$currency_symbol}${data.Grand_Total}`} isBold />
-//         </div>
-
-//         {/* Ordered Items Table */}
-//         <h3 className="text-lg font-bold mb-4 border-b pb-2 border-slate-100">Ordered Items</h3>
-//         <div className="border border-slate-200 rounded-xl overflow-hidden">
-//           <table className="w-full text-left">
-//             <thead className="bg-slate-50">
-//               <tr className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-//                 <th className="px-6 py-3">Product Name</th>
-//                 <th className="px-6 py-3 text-center">Quantity</th>
-//                 <th className="px-6 py-3 text-right">List Price</th>
-//                 <th className="px-6 py-3 text-right">Total</th>
-//               </tr>
-//             </thead>
-//             <tbody className="divide-y divide-slate-100">
-//               {data.Ordered_Items?.map((item, idx) => (
-//                 <tr key={idx} className="text-sm">
-//                   <td className="px-6 py-4 font-medium">{item.Product_Name?.name}</td>
-//                   <td className="px-6 py-4 text-center">{item.Quantity}</td>
-//                   <td className="px-6 py-4 text-right">{item.List_Price}</td>
-//                   <td className="px-6 py-4 text-right font-bold">{item.Total}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const DetailItem = ({ label, value, isBold }) => (
-//   <div className="flex flex-col gap-1">
-//     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
-//     <span className={`text-sm ${isBold ? 'font-bold text-slate-900' : 'text-slate-700'}`}>{value || '-'}</span>
-//   </div>
-// );
-
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export const WorkOrderDetails = ({ orderId, onBack }) => {
+export const WorkOrderDetails = () => {
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetail = async () => {
       try {
         const authResponse = await window.catalyst.auth.generateAuthToken();
-        const response = await fetch(`https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/work_order/${orderId}`, {
+        const response = await fetch(`https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/work_order/${id}`, {
           headers: { Authorization: authResponse.access_token }
         });
         const result = await response.json();
@@ -111,7 +23,7 @@ export const WorkOrderDetails = ({ orderId, onBack }) => {
       }
     };
     fetchDetail();
-  }, [orderId]);
+  }, [id]);
 
 //   if (loading) return <div className="p-10 text-center font-sans text-slate-500">Loading Order Details...</div>;
 
@@ -127,12 +39,12 @@ if (loading) return (
     <div className="min-h-screen bg-white font-sans text-[#334155] antialiased">
       {/* Top Header */}
       <div className="flex items-center px-6 py-4 border-b border-slate-100">
-        <button onClick={onBack} className="mr-4 text-[#00579c] hover:text-blue-800 transition-colors">
+        <button onClick={() => navigate('/work-orders')} className="mr-4 text-[#00579c]">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="text-xl font-semibold text-slate-800 tracking-tight">{data.id}</h1>
+        <h1 className="text-xl font-semibold text-slate-800 tracking-tight">Order ID: {id}</h1>
       </div>
 
       <div className="p-10 max-w-[1200px]">
