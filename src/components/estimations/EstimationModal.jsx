@@ -6,7 +6,7 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [token, setToken] = useState('');
   const navigate = useNavigate();
-  
+
   // 1. Form State
   const [formData, setFormData] = useState({
     Subject: '',
@@ -32,7 +32,7 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
     if (isOpen) {
       setStep(1);
       fetchAllData();
-      
+
       if (editData) {
         // Populate form with existing data for Editing
         setFormData({
@@ -95,8 +95,8 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
       setApiData({
         serviceRequests: res1.data || [],
         agencies: (res2.data || []).map(a => ({ ...a, id: String(a.id) })),
-        contacts: res3.data || [], 
-        products: res4.data || [], 
+        contacts: res3.data || [],
+        products: res4.data || [],
         dealers: res5.data || []
       });
     } catch (e) { console.error("Fetch error", e); }
@@ -104,25 +104,25 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
 
   const handleFinalSubmit = async () => {
     setIsSubmitting(true);
-    
+
     const payload = {
       data: [{
         ...formData,
-        Service_Request_ID: { 
-            id: formData.Service_Request_ID, 
-            name: apiData.serviceRequests.find(i => i.id === formData.Service_Request_ID)?.Name 
+        Service_Request_ID: {
+          id: formData.Service_Request_ID,
+          name: apiData.serviceRequests.find(i => i.id === formData.Service_Request_ID)?.Name
         },
-        Agency: { 
-            id: String(formData.Agency), 
-            name: apiData.agencies.find(i => String(i.id) === String(formData.Agency))?.Agency?.name 
+        Agency: {
+          id: String(formData.Agency),
+          name: apiData.agencies.find(i => String(i.id) === String(formData.Agency))?.Agency?.name
         },
-        Account_Name: { 
-            id: formData.Account_Name, 
-            name: apiData.dealers.find(i => i.id === formData.Account_Name)?.Account_Name 
+        Account_Name: {
+          id: formData.Account_Name,
+          name: apiData.dealers.find(i => i.id === formData.Account_Name)?.Account_Name
         },
-        Contact_Name: { 
-            id: formData.Contact_Name, 
-            name: apiData.contacts.find(i => i.id === formData.Contact_Name)?.First_Name + " " + apiData.contacts.find(i => i.id === formData.Contact_Name)?.Last_Name 
+        Contact_Name: {
+          id: formData.Contact_Name,
+          name: apiData.contacts.find(i => i.id === formData.Contact_Name)?.First_Name + " " + apiData.contacts.find(i => i.id === formData.Contact_Name)?.Last_Name
         },
         Quoted_Items: quotedItems.map((item, index) => ({
           ...(editData ? { id: item.id } : { id: index + 1 }), // Preserve ID if editing
@@ -137,7 +137,7 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
 
     try {
       const method = editData ? 'PUT' : 'POST';
-      const url = editData 
+      const url = editData
         ? `https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/estimations/${editData.id}`
         : `https://voltasservicemanagement-773793963.development.catalystserverless.com/server/service/estimations`;
 
@@ -150,8 +150,8 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
 
       if (result.status === "success" || (result.data && result.data[0]?.status === "success")) {
         //alert(editData ? "Estimation Updated Successfully!" : "Estimation Created Successfully!");
-        if (refreshData){ refreshData(); }
-        else{navigate(`/estimations/${result.data[0].details.id}`);}
+        if (refreshData) { refreshData(); }
+        else { navigate(`/estimations/${result.data[0].details.id}`); }
         onClose();
       }
     } catch (error) {
@@ -170,7 +170,7 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white w-full max-w-[600px] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-        
+
         {/* Header & Progress */}
         <div className="pt-6 px-6 border-b bg-slate-50/50">
           <div className="flex justify-between items-center mb-4">
@@ -186,15 +186,15 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
         </div>
 
         {/* Scrollable Form */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 pb-32 space-y-6">
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in duration-300">
               <div>
                 <label className="text-[11px] font-bold text-slate-500 uppercase ml-1">Subject</label>
-                <input type="text" value={formData.Subject} className={inputClass} onChange={e => setFormData({...formData, Subject: e.target.value})} />
+                <input type="text" value={formData.Subject} className={inputClass} onChange={e => setFormData({ ...formData, Subject: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                {/* <div>
                   <label className="text-[11px] font-bold text-slate-500 uppercase ml-1">Service Request</label>
                   <select value={formData.Service_Request_ID} className={selectClass} onChange={e => setFormData({...formData, Service_Request_ID: e.target.value})}>
                     <option value="">Select Request...</option>
@@ -207,10 +207,27 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
                     <option value="">Select Agency...</option>
                     {apiData.agencies.map(a => <option key={String(a.Agency.id)} value={String(a.Agency.id)}>{a.Agency?.name}</option>)}
                   </select>
-                </div>
+                </div> */}
+                <CustomSelect
+                  label="Service Request"
+                  value={formData.Service_Request_ID}
+                  options={apiData.serviceRequests}
+                  labelKey="Name"
+                  placeholder="Select Request..."
+                  onChange={val => setFormData({ ...formData, Service_Request_ID: val })}
+                />
+                <CustomSelect
+                  label="Agency"
+                  value={formData.Agency}
+                  options={apiData.agencies}
+                  labelKey={(opt) => opt.Agency?.name} // Access nested object
+                  valueKey="id"
+                  placeholder="Select Agency..."
+                  onChange={val => setFormData({ ...formData, Agency: val })}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                {/* <div>
                   <label className="text-[11px] font-bold text-slate-500 uppercase ml-1">Contact</label>
                   <select value={formData.Contact_Name} className={selectClass} onChange={e => setFormData({...formData, Contact_Name: e.target.value})}>
                     <option value="">Select Contact...</option>
@@ -223,33 +240,49 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
                     <option value="">Select Dealer...</option>
                     {apiData.dealers.map(d => <option key={d.id} value={d.id}>{d.Account_Name}</option>)}
                   </select>
-                </div>
+                </div> */}
+                <CustomSelect
+                  label="Contact"
+                  value={formData.Contact_Name}
+                  options={apiData.contacts}
+                  labelKey={(opt) => `${opt.First_Name} ${opt.Last_Name}`}
+                  placeholder="Select Contact..."
+                  onChange={val => setFormData({ ...formData, Contact_Name: val })}
+                />
+                <CustomSelect
+                  label="Dealer"
+                  value={formData.Account_Name}
+                  options={apiData.dealers}
+                  labelKey="Account_Name"
+                  placeholder="Select Dealer..."
+                  onChange={val => setFormData({ ...formData, Account_Name: val })}
+                />
               </div>
             </div>
           )}
 
           {step === 2 && (
-             <div className="grid grid-cols-2 gap-x-4 gap-y-4 animate-in fade-in duration-300">
-                {Object.keys(formData).filter(k => k.includes('Billing') || k.includes('Shipping')).map(field => (
-                  <div key={field} className={field.includes('Street') ? 'col-span-2' : ''}>
-                    <label className="text-[11px] font-bold text-slate-500 uppercase ml-1">{field.replace('_', ' ')}</label>
-                    <input type="text" value={formData[field]} className={inputClass} onChange={e => setFormData({...formData, [field]: e.target.value})} />
-                  </div>
-                ))}
-             </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4 animate-in fade-in duration-300">
+              {Object.keys(formData).filter(k => k.includes('Billing') || k.includes('Shipping')).map(field => (
+                <div key={field} className={field.includes('Street') ? 'col-span-2' : ''}>
+                  <label className="text-[11px] font-bold text-slate-500 uppercase ml-1">{field.replace('_', ' ')}</label>
+                  <input type="text" value={formData[field]} className={inputClass} onChange={e => setFormData({ ...formData, [field]: e.target.value })} />
+                </div>
+              ))}
+            </div>
           )}
 
           {step === 3 && (
             <div className="space-y-4 animate-in fade-in duration-300">
               <div className="flex justify-between items-center border-b pb-2">
                 <h4 className="font-bold text-slate-700">Line Items</h4>
-                <button onClick={() => setQuotedItems([...quotedItems, {id: Date.now(), product_id: '', qty: 1}])} className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-100">+ Add Row</button>
+                <button onClick={() => setQuotedItems([...quotedItems, { id: Date.now(), product_id: '', qty: 1 }])} className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-100">+ Add Row</button>
               </div>
               <div className="space-y-3">
                 {quotedItems.map((item, idx) => (
-                    <div key={item.id} className="flex gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-100 group">
-                        <div className="flex-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Product</label>
+                  <div key={item.id} className="flex gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-100 group">
+                    <div className="flex-1">
+                      {/* <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Product</label>
                             <select value={item.product_id} className={selectClass} onChange={e => {
                                 const newItems = [...quotedItems];
                                 newItems[idx].product_id = e.target.value;
@@ -257,18 +290,30 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
                             }}>
                                 <option value="">Select product...</option>
                                 {apiData.products.map(p => <option key={p.id} value={p.id}>{p.Product_Name}</option>)}
-                            </select>
-                        </div>
-                        <div className="w-24">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Qty</label>
-                            <input type="number" value={item.qty} className={inputClass} onChange={e => {
-                                const newItems = [...quotedItems];
-                                newItems[idx].qty = e.target.value;
-                                setQuotedItems(newItems);
-                            }} />
-                        </div>
-                        <button onClick={() => setQuotedItems(quotedItems.filter(i => i.id !== item.id))} className="mt-5 p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">&times;</button>
+                            </select> */}
+                      <CustomSelect
+                        label="Product"
+                        value={item.product_id}
+                        options={apiData.products}
+                        labelKey="Product_Name"
+                        placeholder="Select product..."
+                        onChange={val => {
+                          const newItems = [...quotedItems];
+                          newItems[idx].product_id = val;
+                          setQuotedItems(newItems);
+                        }}
+                      />
                     </div>
+                    <div className="w-24">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Qty</label>
+                      <input type="number" value={item.qty} className={inputClass} onChange={e => {
+                        const newItems = [...quotedItems];
+                        newItems[idx].qty = e.target.value;
+                        setQuotedItems(newItems);
+                      }} />
+                    </div>
+                    <button onClick={() => setQuotedItems(quotedItems.filter(i => i.id !== item.id))} className="mt-5 p-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">&times;</button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -280,7 +325,7 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
           <button onClick={() => step > 1 && setStep(step - 1)} className={`text-slate-500 font-bold text-sm ${step === 1 ? 'invisible' : ''}`}>Back</button>
           <div className="flex gap-3">
             <button onClick={onClose} className="px-4 text-slate-400 font-bold">Cancel</button>
-            <button 
+            <button
               onClick={() => step < 3 ? setStep(step + 1) : handleFinalSubmit()}
               disabled={isSubmitting}
               className="bg-[#0066b2] text-white px-8 py-2.5 rounded-full font-bold disabled:opacity-50"
@@ -294,4 +339,60 @@ const EstimationModal = ({ isOpen, onClose, editData, refreshData }) => {
   );
 };
 
+const CustomSelect = ({ label, value, options, onChange, placeholder, labelKey = "name", valueKey = "id" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOption = options.find(opt => String(opt[valueKey]) === String(value));
+  const displayValue = selectedOption ? (typeof labelKey === 'function' ? labelKey(selectedOption) : selectedOption[labelKey]) : placeholder;
+
+  const handleSelect = (val) => {
+    onChange(val);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="w-full relative">
+      <label className="text-[11px] font-bold text-slate-500 uppercase ml-1 block mb-1">{label}</label>
+
+      {/* Trigger */}
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-white text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 transition-all cursor-pointer flex justify-between items-center"
+      >
+        <span className={!selectedOption ? "text-slate-400" : "text-slate-700"}>
+          {displayValue}
+        </span>
+        <svg className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
+      {/* Scrollable Dropdown Menu */}
+      {isOpen && (
+        <>
+          {/* Changed: Fixed inset-0 ensures clicking anywhere closes it. 
+              Increased Z-index to 50 to beat the footer.
+          */}
+          <div className="fixed inset-0 z-[60]" onClick={() => setIsOpen(false)}></div>
+          
+          <ul className="absolute left-0 right-0 z-[70] mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl overflow-y-auto max-h-[180px] py-1 animate-in fade-in zoom-in-95 duration-100">
+            {options.length === 0 ? (
+              <li className="p-3 text-slate-400 text-xs italic text-center">No options available</li>
+            ) : (
+              options.map((opt, index) => (
+                <li
+                  key={`${opt[valueKey]}-${index}`}
+                  onClick={() => handleSelect(opt[valueKey])}
+                  className="px-4 py-2.5 hover:bg-blue-50 cursor-pointer text-slate-700 text-sm border-b border-slate-50 last:border-none transition-colors"
+                >
+                  {typeof labelKey === 'function' ? labelKey(opt) : opt[labelKey]}
+                </li>
+              ))
+            )}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+};
 export default EstimationModal;
