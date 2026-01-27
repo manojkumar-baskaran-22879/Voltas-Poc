@@ -341,6 +341,7 @@ function App() {
                 isSidebarOpen={isSidebarOpen}
                 setSidebarOpen={setSidebarOpen}
                 email={details?.content.email_id}
+                isAdmin={details?.content.role_details.role_name === 'App Administrator'}
               />
             }
           />
@@ -359,7 +360,7 @@ function App() {
 /* =======================
    APP LAYOUT (AUTH ONLY)
 ======================= */
-function AppLayout({ isSidebarOpen, setSidebarOpen, email }) {
+function AppLayout({ isSidebarOpen, setSidebarOpen, email, isAdmin = true }) {
   const [isProfileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -375,7 +376,8 @@ function AppLayout({ isSidebarOpen, setSidebarOpen, email }) {
   }, []);
 
   const handleLogout = () => {
-    window.catalyst.auth.signOut('/');
+    var redirectURL = window.origin + "/";
+    window.catalyst.auth.signOut(redirectURL);
   };
 
   const navItems = [
@@ -474,8 +476,8 @@ function AppLayout({ isSidebarOpen, setSidebarOpen, email }) {
         {/* Dynamic Route Content */}
         <div className="flex-1 overflow-y-auto bg-slate-50 p-4 lg:p-8">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/service-requests" element={<ServiceRequest />} />
+            <Route path="/" element={<Dashboard isAdmin={isAdmin} />} />
+            <Route path="/service-requests" element={<ServiceRequest isAdmin={isAdmin} />} />
             <Route path="/estimations" element={<Estimations />} />
             <Route path="/estimations/:id" element={<EstimationDetails />} />
             <Route path="/agency-stock" element={<AgencyStock />} />
@@ -490,8 +492,8 @@ function AppLayout({ isSidebarOpen, setSidebarOpen, email }) {
             <Route path="/order-receiving/:id" element={<OrderReceivingDetails />} />
             <Route path="/service-request/:id" element={<ServiceRequestDetail />} />
             <Route path="/service-request/edit/:id" element={<ServiceRequestEdit />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="*" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard isAdmin={isAdmin} />} />
+            <Route path="*" element={<Dashboard isAdmin={isAdmin} />} />
           </Routes>
         </div>
       </main>

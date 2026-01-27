@@ -111,7 +111,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, CheckCircle2, CalendarDays, BarChart3, RefreshCcw } from 'lucide-react';
 
-const Dashboard = () => {
+const Dashboard = ({ isAdmin }) => {
   const [counts, setCounts] = useState({ 
     pending: 0, 
     completed: 0,
@@ -123,12 +123,35 @@ const Dashboard = () => {
   const fetchCounts = async () => {
     setIsLoading(true);
     try {
-      const endpoints = [
+      // const endpoints = [
+      //   'dealer_open_request_count',
+      //   'dealer_closed_request_count',
+      //   'dealer_monthly_request_count',
+      //   'dealer_yearly_request_count'
+      // ];
+
+      let endpoints = [];
+
+      if (!isAdmin) {
+
+        endpoints = [
+        'technician_open_request_count/TC20230022',
+        'technician_completed_request_count/TC20230022',
+        'dealer_monthly_request_count/TC20230022',
+        'dealer_yearly_request_count/TC20230022'
+      ];
+
+      }
+      else {
+
+        endpoints = [
         'dealer_open_request_count',
         'dealer_closed_request_count',
         'dealer_monthly_request_count',
         'dealer_yearly_request_count'
       ];
+
+      }
 
       const authResponse = await window.catalyst.auth.generateAuthToken();
       const token = authResponse.access_token;
